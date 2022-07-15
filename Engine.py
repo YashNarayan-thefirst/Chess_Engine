@@ -1,7 +1,7 @@
 #Full implementation yet to happen
 class GameState:
     whiteToMove = None
-    def _init_(self):
+    def __init__(self):
         self.board = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ['bp', "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
@@ -14,16 +14,25 @@ class GameState:
 
         self.whiteToMove = True
         self.moveLog = []
-    def push(self,move):
+    def push(self,move): # Makes moves
         self.board[move.startRow][move.startCol] = '--'
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
-    def pop(self,move):
+    def pop(self,move): # Unmakes moves
         self.board[move.startRow][move.startCol] = move.pieceMoved
         self.board[move.endRow][move.endCol] = '--'
         self.moveLog.remove(move)
         self.whiteToMove = not self.whiteToMove
+
+    class Piece :
+        def __init__(self, color, type_, image, value) :
+            self.color = color
+            self.type_ = type_
+            self.image = image
+            self.value = value
+
+
 
 class Move:
     ranksToRows = {'1':7,'2':6,'3':5,'4':4,'5':3,'6':2,'7':1,'8':0}
@@ -43,3 +52,4 @@ class Move:
 
     def getRankFile(self,r,c):
         return self.colsToFiles[c]+self.rowsToRanks[r]
+
