@@ -19,6 +19,3 @@ def placePieces(fen_):
     else :
         return Fen_reader.fen_to_board(default_fen)
 
-gs = Engine.GameState()
-m1 = Engine.Move('e2','e4',gs)
-print(gs.push(m1))
