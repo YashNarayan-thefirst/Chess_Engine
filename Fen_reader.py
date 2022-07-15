@@ -1,24 +1,18 @@
-from pprint import pprint
-class Piece:
-    def _init_(self,color,type_,image,value):
-        self.color = color
-        self.type_ = type_
-        self.image = image
-        self.value = value
-'''
-wk = Piece('w','king','♔',10000)
-wq = Piece('w','queen','♕',900)
-wr = Piece('w','rook','♖',500)
-wb = Piece('w','bishop','♗',310)
-wn = Piece('w','n','♘',290)
-wp = Piece('w','pawn','♙',100)
-bk= Piece('b','king','♚',10000)
-bq = Piece('b','queen','♛',900)
-br = Piece('b','rook','♜',500)
-bb = Piece('b','bishop','♝',310)
-bn = Piece('b','knight','♞',290)
-bp = Piece('b','pawn','♟',100)
-'''
+import Engine
+
+wk = Engine.GameState.Piece('w', 'king', '♔', 10000)
+wq = Engine.GameState.Piece('w', 'queen', '♕', 900)
+wr = Engine.GameState.Piece('w', 'rook', '♖', 500)
+wb = Engine.GameState.Piece('w', 'bishop', '♗', 310)
+wn = Engine.GameState.Piece('w', 'n', '♘', 290)
+wp = Engine.GameState.Piece('w', 'pawn', '♙', 100)
+bk = Engine.GameState.Piece('b', 'king', '♚', 10000)
+bq = Engine.GameState.Piece('b', 'queen', '♛', 900)
+br = Engine.GameState.Piece('b', 'rook', '♜', 500)
+bb = Engine.GameState.Piece('b', 'bishop', '♝', 310)
+bn = Engine.GameState.Piece('b', 'knight', '♞', 290)
+bp = Engine.GameState.Piece('b', 'pawn', '♟', 100)
+
 default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 
 def fen_to_board(fen_):
@@ -31,29 +25,30 @@ def fen_to_board(fen_):
             elif c in '12345678':
                 brow.extend( ['-'] * int(c) )
             elif c == 'P':
-                brow.append( '♟' )
+                brow.append(wp)
             elif c == 'p':
-                brow.append( '♙' )
+                brow.append(bp)
             elif c=='R':
-                brow.append('♜')
+                brow.append(wr)
             elif c=='N':
-                brow.append('♞')
+                brow.append(wn)
             elif c=='B':
-                brow.append('♝')
+                brow.append(wb)
             elif c=='Q':
-                brow.append('♛')
+                brow.append(wq)
             elif c=='r':
-                brow.append('♖')
+                brow.append(br)
             elif c=='n':
-                brow.append('♘')
+                brow.append(bn)
             elif c=='b':
-                brow.append('♗')
+                brow.append(bb)
             elif c=='q':
-                brow.append('♕')
+                brow.append(bq)
             elif c=='k':
-                brow.append('♔')
+                brow.append(bk)
             elif c=='K':
-                brow.append('♚')
+                brow.append(wk)
 
         board.append(brow)
     return board
+
