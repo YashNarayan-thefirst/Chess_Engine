@@ -70,18 +70,14 @@ def alphabeta(board,depth,alpha=-float('inf'),beta=float('inf')):
                 break
         return [best_move,min_eval]
 
-x = input('''This project involves making a chess engine that can solve basic positions, 
-but it is very slow. An evaluation of 9999 means black is getting checkmated(White is winning) and -9999 means white is 
-getting checkmated(Black is winning). To continue, type c and enter the fen and depth. To quit, type anything but c:''')
-if x=='c':
-    fen_ = input('Enter fen: ')
-    board = chess.Board(fen_)
-    _depth = int(input('Enter depth: '))
-    engine = alphabeta(board,_depth)
-    print(board)
-    print(f'Best move is: {engine[0]}')
-    print(f'Evaluation is: {engine[1]}')
-else:
-    sys.exit()
+
+fen_ = input('Enter fen: ')
+board = chess.Board(fen_)
+_depth = int(input('Enter depth: '))
+engine = alphabeta(board,_depth)
+print(board)
+print(f'Best move is: {engine[0]}')
+print(f'Evaluation is: {engine[1]}')
+sys.exit()
 
     
