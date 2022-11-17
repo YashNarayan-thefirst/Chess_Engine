@@ -47,6 +47,7 @@ def alphabeta(position, depth_, alpha=-float('inf'), beta=float('inf')) :
             best_move = _move
             if alpha >= beta :  # alpha-beta cutoff
                 break
+
     return [alpha, best_move]
 
 
@@ -54,9 +55,11 @@ fen_ = input('Enter fen: ')
 board = chess.Board(fen_)
 _depth = int(input('Enter depth: '))
 '''
-uncomment this if you just want to see the best move
+#uncomment this if you just want to see the best move
 engine = alphabeta(board, _depth)
+board.push_san(str(engine[1]))
 print(f'{board}', f'Evaluation: {engine[0]}', f'Best move: {engine[1]}', f'Fen: {board.fen()}',sep='\n')
+
 '''
 while not board.is_game_over() :
     x = {True: 'White\'s turn',False:'Black\'s Turn'}
@@ -67,4 +70,5 @@ while not board.is_game_over() :
     print('\n\n')
 else:
     print('Game over')
+#'''
 sys.exit()
