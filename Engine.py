@@ -51,7 +51,7 @@ def alphabeta(board,depth,alpha=-float('inf'),beta=float('inf')):
                 best_move=_move
             #alpha beta pruning
             alpha = max(alpha,current_eval)
-            if beta<=alpha: #White maximises their score beta>=alpha
+            if beta<=alpha: #White maximises their score
                 break
         return [best_move,max_eval]
 
@@ -67,7 +67,7 @@ def alphabeta(board,depth,alpha=-float('inf'),beta=float('inf')):
                 best_move =_move
             #Alpha beta pruning
             beta = min(beta, current_eval) #black minimizes their score
-            if beta <= alpha:#beta>=alpha
+            if beta <= alpha:
                 break
         return [best_move,min_eval]
 
