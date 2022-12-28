@@ -60,6 +60,7 @@ def alphabeta(board,depth,alpha=-float('inf'),beta=float('inf')):
         for _move in move_list:
             board.push_san(str(_move))
             current_eval = alphabeta(board,depth-1,alpha=-float('inf'),beta=float('inf'))[1]
+            print({'Position':board,'Evaluation': current_eval})
             board.pop()
             if current_eval< min_eval:
                 min_eval = current_eval
