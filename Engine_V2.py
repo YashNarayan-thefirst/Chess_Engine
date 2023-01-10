@@ -67,7 +67,7 @@ while not board.is_game_over() :
     Board.push_san(move)
     engine = alphabeta(board, _depth)
     board.push(engine[1])
-    print(f'{board}\n', f'Evaluation: {engine[0]}', f'Best move: {engine[1]}', f'Fen: {board.fen()}',
+    print(f'{board}\n', f'Evaluation: {-engine[0]}', f'Best move: {engine[1]}', f'Fen: {board.fen()}',
           f'Turn: {x[board.turn]}', sep='\n')
     print('\n\n')
 else:
