@@ -3,7 +3,7 @@ import sys
 import chess
 
 
-def evaluate(position) :
+def evaluate(board) :
     if board.is_checkmate() :
         if board.turn :
             return -9999
@@ -26,7 +26,7 @@ def evaluate(position) :
     bq = len(board.pieces(chess.QUEEN, chess.BLACK))
 
     material = (100 * (wp - bp) + 320 * (wn - bn) + 330 * (wb - bb) + 500 * (wr - br) + 900 * (wq - bq)) / 100
-    return material if position.turn else -material
+    return material if board.turn else -material
 
 
 def alphabeta(position, depth_, alpha=-float('inf'), beta=float('inf')) :
@@ -64,7 +64,7 @@ print(f'{board}', f'Evaluation: {engine[0]}', f'Best move: {engine[1]}', f'Fen: 
 while not board.is_game_over() :
     x = {True: 'White\'s turn',False:'Black\'s Turn'}
     move = input('Enter move:')
-    Board.push_san(move)
+    board.push_san(move)
     engine = alphabeta(board, _depth)
     board.push(engine[1])
     print(f'{board}\n', f'Evaluation: {-engine[0]}', f'Best move: {engine[1]}', f'Fen: {board.fen()}',
