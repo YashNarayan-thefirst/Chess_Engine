@@ -17,14 +17,14 @@ piece_square_tables = {
         0, 0, 0, 0, 0, 0, 0, 0
     ],
     chess.KNIGHT : [
-        -50, -40, -30, -30, -30, -30, -40, -50,
+        -50, -40, -20, -30, -30, -20, -40, -50,
         -40, -20, 0, 0, 0, 0, -20, -40,
         -30, 0, 10, 15, 15, 10, 0, -30,
         -30, 5, 15, 20, 20, 15, 5, -30,
         -30, 0, 15, 20, 20, 15, 0, -30,
-        -30, 5, 10, 15, 15, 10, 5, -30,
-        -40, -20, 0, 5, 5, 0, -20, -40,
-        -50, -40, -30, -30, -30, -30, -40, -50
+        -30, 5, 5, 15, 15, 5, 5, -30,
+        -40, -20, 0, 5, 5, 0, -20,-40,
+        -50, -40, -20, -30, -30, -20, -40, -50
     ],
     chess.BISHOP : [
         -20, -10, -10, -10, -10, -10, -10, -20,
@@ -170,9 +170,9 @@ def evaluate(position) :
     if position is not None:
         if position.is_checkmate() :
             if position.turn :
-                return -9999
+                return -999900
             else :
-                return 9999
+                return 999900
         if position.is_stalemate() or position.is_insufficient_material() :
             return 0
         total_evaluation = 0
@@ -202,17 +202,18 @@ def evaluate(position) :
         own_legal_moves = position.legal_moves.count()
         opponent_legal_moves = position.legal_moves.count()
         mobility_score = own_legal_moves - opponent_legal_moves
+        mobility_score/=10
         total_evaluation += mobility_score
 
         # center control score
         own_center_control = sum([1 for square in center_control_tables if position.attackers(position.turn, square)])
         opponent_center_control = sum([1 for square in center_control_tables if position.attackers(not position.turn, square)])
         center_control_score = center_control_tables[own_center_control] - center_control_tables[opponent_center_control]
+        center_control_score/=10
         total_evaluation+= center_control_score
-        total_evaluation+= mobility_score
 
         endgame_score = 0
-        endgame_threshold= 7
+        endgame_threshold= 10
 
         if total_evaluation <= endgame_threshold :
             endgame_score = endgame_tables[own_center_control] - endgame_tables[opponent_center_control]
@@ -253,19 +254,23 @@ fen_ = input('Enter fen: ')
 board = chess.Board(fen_)
 _depth = int(input('Enter depth: '))
 
-while not board.is_game_over():
+while True:
+    game_board = display.start()
     if not board.is_game_over():
-        x = {True : "White's turn", False : "Black's turn"}
-        move = input('Enter move:')
-        board.push_san(str(move))
-        engine = alphabeta(board, _depth)
-        board.push(engine[1])
-        print(f"{board}\n", f"Evaluation: {-engine[0]/100}", f"Best move: {engine[1]}", f"Fen: {board.fen()}",
-              f"Turn: {x[board.turn]}", sep='\n')
-        game_board = display.start()
-        display.update(board.fen(), game_board)
-        display.check_for_quit()
+        try:
+            display.update(board.fen(), game_board)
+            x = {True : "White's turn", False : "Black's turn"}
+            move = input('Enter move:')
+            board.push_san(str(move))
+            engine = alphabeta(board, _depth)
+            board.push(engine[1])
+            print(f"{board}\n", f"Evaluation: {-engine[0]/100}", f"Best move: {engine[1]}", f"Fen: {board.fen()}",
+                  f"Turn: {x[board.turn]}", sep='\n')
+            display.update(board.fen(), game_board)
+            display.check_for_quit()
+        except:
+            print('Game over', f'Result: {board.result()}')
+            break
     else:
-        display.terminate()
-        print('Game over',f'Result: {board.result()}')
-sys.exit()
+        print(f'Game over\nResult: {board.result()}')
+        break
