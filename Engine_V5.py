@@ -4,7 +4,6 @@ import multiprocessing as mp
 import concurrent.futures
 from chessboard import display
 import chess.engine
-import os
 
 piece_tables = {chess.PAWN : 100, chess.KNIGHT : 320, chess.BISHOP : 330, chess.ROOK : 500, chess.QUEEN : 900,
                 chess.KING : 0}
@@ -162,6 +161,7 @@ king_safety_tables = {
     chess.E8: 9, chess.F8: 7, chess.G8: 7, chess.H8: 7
 }
 endgame_tables = {
+
     chess.A1: 0, chess.B1: 0, chess.C1: 0, chess.D1: 0, chess.E1: 0, chess.F1: 0, chess.G1: 0, chess.H1: 0,
     chess.A2: 5, chess.B2: 10, chess.C2: 10, chess.D2: 10, chess.E2: 10, chess.F2: 10, chess.G2: 10, chess.H2: 5,
     chess.A3: 4, chess.B3: 8, chess.C3: 8, chess.D3: 8, chess.E3: 8, chess.F3: 8, chess.G3: 8, chess.H3: 4,
@@ -217,7 +217,7 @@ def evaluate(position):
     # Pawn structure score
     own_pawns = position.pieces(chess.PAWN, position.turn)
     own_pawn_files = [chess.square_file(square) for square in own_pawns]
-    pawn_structure_score = sum([pawn_structure_tables[square] for square in own_pawn_files])
+    pawn_structure_score = sum(pawn_structure_tables[square] for square in own_pawn_files)
     total_evaluation += pawn_structure_score * weight_pawn_structure / 10
 
     # Mobility score
@@ -228,8 +228,8 @@ def evaluate(position):
     total_evaluation += mobility_score
 
     # Center control score
-    own_center_control = sum([1 for square in center_control_tables if position.attackers(position.turn, square)])
-    opponent_center_control = sum([1 for square in center_control_tables if position.attackers(not position.turn, square)])
+    own_center_control = sum(1 for square in center_control_tables if position.attackers(position.turn, square))
+    opponent_center_control = sum(1 for square in center_control_tables if position.attackers(not position.turn, square))
     center_control_score = (center_control_tables[own_center_control] - center_control_tables[opponent_center_control]) * weight_center_control / 10
     total_evaluation += center_control_score
 
@@ -244,28 +244,16 @@ def evaluate(position):
     total_evaluation += endgame_score
 
     return total_evaluation
-
-
 def iterative_deepening_search(position, max_depth=4):
     best_move = None
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for depth in range(1, max_depth+1):
-            # Change the function to be executed to alphabeta_search instead of minimax_search
             future = executor.submit(alphabeta, position, depth)
             try:
-                # Get the result of the future
-                move = future.result(timeout=None)
-                # If the result is not None, update the best move
-                if move is not None:
-                    best_move = move
+                best_move = future.result(timeout=1.0)
             except concurrent.futures.TimeoutError:
-                # Ignore timeouts
                 pass
     return best_move
-
-
-def minimax_search(position, depth, maximizing_player=True):
-    return alphabeta(position, depth, maximizing_player=maximizing_player)
 
 def move_ordering(position):
     """Returns a list of legal moves in order of increasing value"""
@@ -273,7 +261,8 @@ def move_ordering(position):
     sorted_moves = sorted(legal_moves, key=lambda move: (-int(position.is_capture(move)), evaluate(position.copy().push(move))))
     return sorted_moves
 
-def alphabeta(position, depth, alpha=float('-inf'), beta=float('inf'), null_window=1, use_lmr=True, use_null=True, use_parallel=True, pool=None):
+def alphabeta(position, depth, alpha= float('-inf'), beta= float('inf'), null_window=1, use_lmr=True, use_null=True, use_parallel=True, pool=None):
+    """Returns [eval, best move] for the position at the given depth"""
     if depth == 0 or position.is_game_over():
         return [evaluate(position), None]
 
@@ -287,11 +276,12 @@ def alphabeta(position, depth, alpha=float('-inf'), beta=float('inf'), null_wind
         score = -alphabeta(position, depth - 3, -beta, -beta + 1, null_window, False, False, False, None)[0]
         position.pop()
         if score >= beta:
-            return [best_score, None]
+            return [beta, None]
 
-
-    if use_lmr and depth > 1 and not position.is_check() and best_move and not position.is_capture(best_move):
-        reduction = 1 if len(legal_moves) >= 10 else 2
+    if use_lmr and depth > 1 and not position.is_check() and best_move is not None and not position.is_capture(best_move) :
+        reduction = 1
+        if len(legal_moves) >= 10:
+            reduction = 2
         for i, move in enumerate(legal_moves):
             if i < 3:
                 score, _ = alphabeta(position.copy().push(move), depth - 1 - reduction, -beta, -alpha, None, False, False, False, None)
@@ -309,18 +299,19 @@ def alphabeta(position, depth, alpha=float('-inf'), beta=float('inf'), null_wind
 
     else:
         if use_parallel and depth > 1:
-            with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as pool:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=4) as pool:
                 results = [
                     pool.submit(alphabeta, position.copy().push(move), depth - 1, -beta, -alpha, null_window, use_lmr,
                                 use_null, use_parallel, None) for move in legal_moves]
                 for result in concurrent.futures.as_completed(results):
                     score, move_ = result.result()
                     score = -score
-                    if score > alpha:
+                    if score > alpha:  # player maximizes his score
                         alpha = score
                         best_move = move_
-                        if alpha >= beta:
+                        if alpha >= beta:  # alpha-beta cutoff
                             break
+
             best_score = alpha
         else:
             for move in legal_moves:
@@ -332,27 +323,23 @@ def alphabeta(position, depth, alpha=float('-inf'), beta=float('inf'), null_wind
                     best_score = score
                     best_move = move
                 alpha = max(alpha, score)
+
     return [best_score, best_move]
-
-
 fen_ = input('Enter fen: ')
 board = chess.Board(fen_)
 _depth = int(input('Enter depth: '))
-
+game_board = display.start()
 while True:
-    game_board = display.start()
     if not board.is_game_over():
-            display.update(board.fen(), game_board)
-            x = {True : "White's turn", False : "Black's turn"}
-            move = input('Enter move:')
-            board.push_san(str(move))
-            engine = alphabeta(board, _depth)
-            board.push(engine[1])
-            print(f"{board}\n", f"Evaluation: {-engine[0]/100}", f"Best move: {engine[1]}", f"Fen: {board.fen()}", sep='\n')
-            display.update(board.fen(), game_board)
-            display.check_for_quit()
+        display.update(board.fen(), game_board)
+        move = input('Enter move:')
+        board.push_san(str(move))
+        engine = alphabeta(board, _depth)
+        board.push(engine[1])
+        print(f"{board}\nEvaluation: {-engine[0]/100}\nBest move: {engine[1]}\nFen: {board.fen()}")
+        display.update(board.fen(), game_board)
+        display.check_for_quit()
     else:
         print(f'Game over\nResult: {board.result()}')
         break
 sys.exit()
-
