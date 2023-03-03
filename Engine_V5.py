@@ -131,7 +131,7 @@ center_control_tables = {
     chess.H5 : 1,
     chess.H6 : 1,
     chess.H7 : 1,
-    chess.H8 : 1,
+    chess.H8 : 1
 }
 pawn_structure_tables = {
     chess.A1: -10, chess.A2: -10, chess.A3: 0, chess.A4: 0, chess.A5: 5, chess.A6: 0, chess.A7: -10, chess.A8: -10,
@@ -141,7 +141,7 @@ pawn_structure_tables = {
     chess.E1: 5, chess.E2: 5, chess.E3: 0, chess.E4: 5, chess.E5: 7, chess.E6: 0, chess.E7: 5, chess.E8: 5,
     chess.F1: 0, chess.F2: 0, chess.F3: 0, chess.F4: 4, chess.F5: 6, chess.F6: 0, chess.F7: 0, chess.F8: 0,
     chess.G1: -5, chess.G2: -5, chess.G3: 0, chess.G4: 3, chess.G5: 5, chess.G6: 0, chess.G7: -5, chess.G8: -5,
-    chess.H1: -10, chess.H2: -10, chess.H3: 0, chess.H4: 0, chess.H5: 5, chess.H6: 0, chess.H7: -10, chess.H8: -10,
+    chess.H1: -10, chess.H2: -10, chess.H3: 0, chess.H4: 0, chess.H5: 5, chess.H6: 0, chess.H7: -10, chess.H8: -10
 }
 king_safety_tables = {
     chess.A1: 0, chess.B1: 0, chess.C1: 0, chess.D1: 1,
@@ -159,7 +159,7 @@ king_safety_tables = {
     chess.A7: 6, chess.B7: 6, chess.C7: 6, chess.D7: 6,
     chess.E7: 6, chess.F7: 6, chess.G7: 6, chess.H7: 6,
     chess.A8: 7, chess.B8: 7, chess.C8: 7, chess.D8: 8,
-    chess.E8: 9, chess.F8: 7, chess.G8: 7, chess.H8: 7,
+    chess.E8: 9, chess.F8: 7, chess.G8: 7, chess.H8: 7
 }
 endgame_tables = {
     chess.A1: 0, chess.B1: 0, chess.C1: 0, chess.D1: 0, chess.E1: 0, chess.F1: 0, chess.G1: 0, chess.H1: 0,
@@ -169,7 +169,7 @@ endgame_tables = {
     chess.A5: 2, chess.B5: 4, chess.C5: 4, chess.D5: 4, chess.E5: 4, chess.F5: 4, chess.G5: 4, chess.H5: 2,
     chess.A6: 1, chess.B6: 2, chess.C6: 2, chess.D6: 2, chess.E6: 2, chess.F6: 2, chess.G6: 2, chess.H6: 1,
     chess.A7: 0, chess.B7: 0, chess.C7: 0, chess.D7: 0, chess.E7: 0, chess.F7: 0, chess.G7: 0, chess.H7: 0,
-    chess.A8: 0, chess.B8: 0, chess.C8: 0, chess.D8: 0, chess.E8: 0, chess.F8: 0, chess.G8: 0, chess.H8: 0,
+    chess.A8: 0, chess.B8: 0, chess.C8: 0, chess.D8: 0, chess.E8: 0, chess.F8: 0, chess.G8: 0, chess.H8: 0
 }
 
 weight_pawn_structure = 1.0
